@@ -1,5 +1,12 @@
-import { createTask, listTasks } from "./store.ts";
+import {
+  createTask,
+  listTasks,
+  deleteTask,
+  updateTask,
+  getTask,
+} from "./store.ts";
 import type { TaskFields } from "./types.ts";
+import { notFound, parseId } from "./http.ts";
 
 const server = Bun.serve({
   port: Number(Bun.env.PORT ?? 3000),
@@ -16,6 +23,30 @@ const server = Bun.serve({
           description: body.description,
         });
         return Response.json(task, { status: 201 });
+      },
+    },
+
+    "/api/tasks/:id": {
+      GET: (req) => {
+        const id = parseId(req.params.id);
+        const task = id ? getTask(id) : null;
+        return task ? Response.json(task) : notFound("Task not found");
+      },
+      PUT: async (req) => {
+        const id = parseId(req.params.id);
+        if (!id) return notFound("Task not found");
+        const body = (await req.json()) as TaskFields;
+        const res = updateTask(id, body);
+
+        return res ? Response.json(res) : notFound("Task not found");
+      },
+      DELETE: (req) => {
+        const id = parseId(req.params.id);
+        const task = id ? deleteTask(id) : null;
+        if (!task) return notFound("Task not found");
+        return task
+          ? Response.json({ message: "Task was deleted" })
+          : notFound("Task not found");
       },
     },
   },
