@@ -44,9 +44,7 @@ const server = Bun.serve({
         const id = parseId(req.params.id);
         const task = id ? deleteTask(id) : null;
         if (!task) return notFound("Task not found");
-        return task
-          ? Response.json({ message: "Task was deleted" })
-          : notFound("Task not found");
+        return new Response(null, { status: 204 });
       },
     },
   },
