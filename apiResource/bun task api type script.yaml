@@ -1,0 +1,134 @@
+openapi: 3.0.0
+info:
+  title: bun task api type script
+  version: 1.0.0
+paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: home_shahrad_documents_bruno_bun_task_api_health_check_yml
+      description: ''
+      responses:
+        '200':
+          description: ''
+  /api/tasks:
+    post:
+      summary: Create Tasks
+      operationId: home_shahrad_documents_bruno_bun_task_api_tasks_create_tasks_yml
+      description: ''
+      tags:
+        - Tasks
+      responses:
+        '200':
+          description: ''
+      requestBody:
+        $ref: '#/components/requestBodies/create_tasks'
+    get:
+      summary: Get All Tasks
+      operationId: home_shahrad_documents_bruno_bun_task_api_tasks_get_all_tasks_yml
+      description: ''
+      tags:
+        - Tasks
+      responses:
+        '200':
+          description: ''
+  /api/tasks/:id:
+    delete:
+      summary: Delete Tasks
+      operationId: home_shahrad_documents_bruno_bun_task_api_tasks_delete_tasks_yml
+      description: ''
+      tags:
+        - Tasks
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: integer
+            format: int32
+          example: '1'
+    get:
+      summary: Get Task
+      operationId: home_shahrad_documents_bruno_bun_task_api_tasks_get_task_yml
+      description: ''
+      tags:
+        - Tasks
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: integer
+            format: int32
+          example: '2'
+    put:
+      summary: Update Tasks
+      operationId: home_shahrad_documents_bruno_bun_task_api_tasks_update_tasks_yml
+      description: ''
+      tags:
+        - Tasks
+      responses:
+        '200':
+          description: ''
+      parameters:
+        - name: id
+          in: path
+          description: ''
+          required: true
+          schema:
+            type: integer
+            format: int32
+          example: '2'
+      requestBody:
+        $ref: '#/components/requestBodies/update_tasks'
+servers:
+  - url: 127.0.0.1:3600
+    description: Base Server
+  - url: 127.0.0.1:3600
+    description: Bun Task Api
+components:
+  schemas:
+    create_tasks:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+      example:
+        title: example2
+        description: trying out new things2
+    update_tasks:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+      example:
+        title: updated example
+        description: practive makes perfect
+  requestBodies:
+    create_tasks:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/create_tasks'
+      description: ''
+      required: true
+    update_tasks:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/update_tasks'
+      description: ''
+      required: true
+  securitySchemes: {}
