@@ -6,7 +6,8 @@ import {
   getTask,
 } from "./store.ts";
 import type { TaskFields } from "./types.ts";
-import { notFound, parseId } from "./http.ts";
+import { badRequest, notFound, parseId, readJson } from "./http.ts";
+import { parseTaskFields } from "./validate.ts";
 
 const server = Bun.serve({
   port: Number(Bun.env.PORT ?? 3000),
@@ -16,13 +17,10 @@ const server = Bun.serve({
     "/api/tasks": {
       GET: () => Response.json(listTasks()),
       POST: async (req) => {
-        const body = (await req.json()) as TaskFields;
+        const parsed = parseTaskFields(await readJson(req));
+        if (!parsed.ok) return badRequest(parsed.error);
 
-        const task = createTask({
-          title: body.title,
-          description: body.description,
-        });
-        return Response.json(task, { status: 201 });
+        return Response.json(createTask(parsed.value), { status: 201 });
       },
     },
 
@@ -35,8 +33,9 @@ const server = Bun.serve({
       PUT: async (req) => {
         const id = parseId(req.params.id);
         if (!id) return notFound("Task not found");
-        const body = (await req.json()) as TaskFields;
-        const res = updateTask(id, body);
+        const parsed = parseTaskFields(await readJson(req));
+        if (!parsed.ok) return badRequest(parsed.error);
+        const res = updateTask(id, parsed.value);
 
         return res ? Response.json(res) : notFound("Task not found");
       },
@@ -54,3 +53,5 @@ const server = Bun.serve({
 });
 
 console.log(`Bun server is running at ${server.url}`);
+
+// 43:14
